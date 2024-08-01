@@ -124,19 +124,6 @@ from ratings;
 This implies there are no outliers in the table. 
 Now, let’s find out the top 10 movies based on average rating.*/
 
--- Q11. Which are the top 10 movies based on average rating?
-/* Output format:
-+---------------+-------------------+---------------------+
-| title			|		avg_rating	|		movie_rank    |
-+---------------+-------------------+---------------------+
-| Fan			|		9.6			|			5	  	  |
-|	.			|		.			|			.		  |
-|	.			|		.			|			.		  |
-|	.			|		.			|			.		  |
-+---------------+-------------------+---------------------+*/
--- Type your code below:
--- It's ok if RANK() or DENSE_RANK() is used too
-
 select title , 
 	avg(avg_rating) as avg_rating , 
 	rank() over (order by avg(avg_rating) desc) as movie_rank
@@ -147,27 +134,9 @@ group by title
 order by avg_rating desc 
 limit 10;
 
+--So, now  we know the top 10 movies.
 
-
-
-
-
-/* Do you find you favourite movie FAN in the top 10 movies with an average rating of 9.6? If not, please check your code again!!
-So, now that you know the top 10 movies, do you think character actors and filler actors can be from these movies?
-Summarising the ratings table based on the movie counts by median rating can give an excellent insight.*/
-
--- Q12. Summarise the ratings table based on the movie counts by median ratings.
-/* Output format:
-
-+---------------+-------------------+
-| median_rating	|	movie_count		|
-+-------------------+----------------
-|	1			|		105			|
-|	.			|		.			|
-|	.			|		.			|
-+---------------+-------------------+ */
--- Type your code below:
--- Order by is good to have
+-- Summarising the ratings table based on the movie counts by median ratings.
 
 select median_rating, 
 	count(median_rating) as movie_count
@@ -175,21 +144,8 @@ from ratings
 group by median_rating
 order by median_rating asc;
 
-
-
-
-
 /* Movies with a median rating of 7 is highest in number. 
 Now, let's find out the production house with which RSVP Movies can partner for its next project.*/
-
--- Q13. Which production house has produced the most number of hit movies (average rating > 8)??
-/* Output format:
-+------------------+-------------------+---------------------+
-|production_company|movie_count	       |	prod_company_rank|
-+------------------+-------------------+---------------------+
-| The Archers	   |		1		   |			1	  	 |
-+------------------+-------------------+---------------------+*/
--- Type your code below:
 
 select production_company, 
 	count(*) as movie_count,
@@ -201,25 +157,7 @@ group by production_company
 having avg(avg_rating) > 8
 order by movie_count desc;
 
-
-
-
-
-
--- It's ok if RANK() or DENSE_RANK() is used too
--- Answer can be Dream Warrior Pictures or National Theatre Live or both
-
--- Q14. How many movies released in each genre during March 2017 in the USA had more than 1,000 votes?
-/* Output format:
-
-+---------------+-------------------+
-| genre			|	movie_count		|
-+-------------------+----------------
-|	thriller	|		105			|
-|	.			|		.			|
-|	.			|		.			|
-+---------------+-------------------+ */
--- Type your code below:
+-- How many movies released in each genre during March 2017 in the USA had more than 1,000 votes?
 
 select genre, 
 	count(id) as  movie_count
@@ -235,20 +173,7 @@ having avg(total_votes) > 1000
 order by movie_count desc;
 
 
-
-
--- Lets try to analyse with a unique problem statement.
--- Q15. Find movies of each genre that start with the word ‘The’ and which have an average rating > 8?
-/* Output format:
-+---------------+-------------------+---------------------+
-| title			|		avg_rating	|		genre	      |
-+---------------+-------------------+---------------------+
-| Theeran		|		8.3			|		Thriller	  |
-|	.			|		.			|			.		  |
-|	.			|		.			|			.		  |
-|	.			|		.			|			.		  |
-+---------------+-------------------+---------------------+*/
--- Type your code below:
+-- Movies of each genre that start with the word ‘The’ and which have an average rating > 8?
 
 select title, 
 	round(avg(avg_rating),1) as avg_rating, genre 
@@ -262,13 +187,7 @@ group by title, genre
 having avg(avg_rating) > 8 
 order by avg_rating desc;
 
-
-
-
--- You should also try your hand at median rating and check whether the ‘median rating’ column gives any significant insights.
--- Q16. Of the movies released between 1 April 2018 and 1 April 2019, how many were given a median rating of 8?
--- Type your code below:
-
+-- Number of mocies with median rating greater than 8
 select count(*) as no_of_movies_with_median_rating_grater_than_8 
 from movie
 inner join 
@@ -277,14 +196,7 @@ where date_published between "2018-04-01" and "2019-04-01"
 and median_rating > 8;
 
 
-
-
-
-
--- Once again, try to solve the problem given below.
--- Q17. Do German movies get more votes than Italian movies? 
--- Hint: Here you have to find the total number of votes for both German and Italian movies.
--- Type your code below:
+-- Checking if German movies get more votes than Italian movies.
 
 select country, sum(total_votes) as total_number_of_votes
 from movie 
@@ -295,28 +207,9 @@ group by country
 order by total_number_of_votes desc;
 
 
+-- let us now analyse the names table. 
 
-
--- Answer is Yes
-
-/* Now that you have analysed the movies, genres and ratings tables, let us now analyse another table, the names table. 
-Let’s begin by searching for null values in the tables.*/
-
-
-
-
--- Segment 3:
-
-
-
--- Q18. Which columns in the names table have null values??
-/*Hint: You can find null values for individual columns or follow below output format
-+---------------+-------------------+---------------------+----------------------+
-| name_nulls	|	height_nulls	|date_of_birth_nulls  |known_for_movies_nulls|
-+---------------+-------------------+---------------------+----------------------+
-|		0		|			123		|	       1234		  |	   12345	    	 |
-+---------------+-------------------+---------------------+----------------------+*/
--- Type your code below:
+-- Checking columns in the names table having null values.
 
 select count(*) as name_nulls from names where name is null;
 select count(*) as height_nulls from names where height is null;
@@ -324,23 +217,10 @@ select count(*) as date_of_birth_nulls from names where date_of_birth is null;
 select count(*) as known_for_movies_nulls from names where known_for_movies is null;
 
 
+-- There are no Null value in the column 'name'.
 
-/* There are no Null value in the column 'name'.
-The director is the most important person in a movie crew. 
+/* The director is the most important person in a movie crew. 
 Let’s find out the top three directors in the top three genres who can be hired by RSVP Movies.*/
-
--- Q19. Who are the top three directors in the top three genres whose movies have an average rating > 8?
--- (Hint: The top three genres would have the most number of movies with an average rating > 8.)
-/* Output format:
-
-+---------------+-------------------+
-| director_name	|	movie_count		|
-+---------------+-------------------|
-|James Mangold	|		4			|
-|	.			|		.			|
-|	.			|		.			|
-+---------------+-------------------+ */
--- Type your code below:
 
 select director_name, count(*) as movie_count
 from 
@@ -359,20 +239,11 @@ group by director_name
 order by movie_count desc
 limit 3;
 
+-- James Mangold can be hired as the director for RSVP's next project.
 
-/* James Mangold can be hired as the director for RSVP's next project. Do you remeber his movies, 'Logan' and 'The Wolverine'. 
-Now, let’s find out the top two actors.*/
+-- Now, let’s find out the top two actors.
 
--- Q20. Who are the top two actors whose movies have a median rating >= 8?
-/* Output format:
-
-+---------------+-------------------+
-| actor_name	|	movie_count		|
-+-------------------+----------------
-|Christain Bale	|		10			|
-|	.			|		.			|
-+---------------+-------------------+ */
--- Type your code below:
+-- The top two actors whose movies have a median rating >= 8.
 
 select name as actor_name, count(*) as movie_count
 from names 
@@ -388,21 +259,12 @@ order by movie_count desc
 limit 2;
 
 
+-- Mohanlal is one of the top three actors.
 
-/* Have you find your favourite actor 'Mohanlal' in the list. If no, please check your code again. 
-RSVP Movies plans to partner with other global production houses. 
+/* RSVP Movies might plan to partner with other global production houses. 
 Let’s find out the top three production houses in the world.*/
 
--- Q21. Which are the top three production houses based on the number of votes received by their movies?
-/* Output format:
-+------------------+--------------------+---------------------+
-|production_company|vote_count			|		prod_comp_rank|
-+------------------+--------------------+---------------------+
-| The Archers		|		830			|		1	  		  |
-|	.				|		.			|			.		  |
-|	.				|		.			|			.		  |
-+-------------------+-------------------+---------------------+*/
--- Type your code below:
+-- The top three production houses based on the number of votes received by their movies.
 
 select * from 
 ( 
@@ -419,12 +281,7 @@ as production_company_rank_details_on_votes
 where prod_comp_rank <=3;
 
 
-
-
-
-
-
-/*Yes Marvel Studios rules the movie world.
+/*Marvel Studios rules the movie world.
 So, these are the top three production houses based on the number of votes received by the movies they have produced.
 
 Since RSVP Movies is based out of Mumbai, India also wants to woo its local audience. 
@@ -656,25 +513,7 @@ select * from
 ) as production_houses
 where prod_comp_rank <= 2;
 
-
-
-
-
-
--- Multilingual is the important piece in the above question. It was created using POSITION(',' IN languages)>0 logic
--- If there is a comma, that means the movie is of more than one language
-
-
--- Q28. Who are the top 3 actresses based on number of Super Hit movies (average rating >8) in drama genre?
-/* Output format:
-+---------------+-------------------+---------------------+----------------------+-----------------+
-| actress_name	|	total_votes		|	movie_count		  |actress_avg_rating	 |actress_rank	   |
-+---------------+-------------------+---------------------+----------------------+-----------------+
-|	Laura Dern	|			1016	|	       1		  |	   9.60			     |		1	       |
-|		.		|			.		|	       .		  |	   .	    		 |		.	       |
-|		.		|			.		|	       .		  |	   .	    		 |		.	       |
-+---------------+-------------------+---------------------+----------------------+-----------------+*/
--- Type your code below:
+-- The top 3 actresses based on number of Super Hit movies (average rating >8) in drama genre. 
 
 select *, 
 rank() over(order by actress_avg_rating desc, total_votes desc)
@@ -701,11 +540,7 @@ from
 as actress_ratings_based_on_votes_drama_genre;
 
 
-
-
-
-
-/* Q29. Get the following details for top 9 directors (based on number of movies)
+/* Fetching the following details for top 9 directors (based on number of movies)
 Director id
 Name
 Number of movies
@@ -714,25 +549,7 @@ Average movie ratings
 Total votes
 Min rating
 Max rating
-total movie durations
-
-Format:
-+---------------+-------------------+---------------------+----------------------+--------------+--------------+------------+------------+----------------+
-| director_id	|	director_name	|	number_of_movies  |	avg_inter_movie_days |	avg_rating	| total_votes  | min_rating	| max_rating | total_duration |
-+---------------+-------------------+---------------------+----------------------+--------------+--------------+------------+------------+----------------+
-|nm1777967		|	A.L. Vijay		|			5		  |	       177			 |	   5.65	    |	1754	   |	3.7		|	6.9		 |		613		  |
-|	.			|		.			|			.		  |	       .			 |	   .	    |	.		   |	.		|	.		 |		.		  |
-|	.			|		.			|			.		  |	       .			 |	   .	    |	.		   |	.		|	.		 |		.		  |
-|	.			|		.			|			.		  |	       .			 |	   .	    |	.		   |	.		|	.		 |		.		  |
-|	.			|		.			|			.		  |	       .			 |	   .	    |	.		   |	.		|	.		 |		.		  |
-|	.			|		.			|			.		  |	       .			 |	   .	    |	.		   |	.		|	.		 |		.		  |
-|	.			|		.			|			.		  |	       .			 |	   .	    |	.		   |	.		|	.		 |		.		  |
-|	.			|		.			|			.		  |	       .			 |	   .	    |	.		   |	.		|	.		 |		.		  |
-|	.			|		.			|			.		  |	       .			 |	   .	    |	.		   |	.		|	.		 |		.		  |
-+---------------+-------------------+---------------------+----------------------+--------------+--------------+------------+------------+----------------+
-
---------------------------------------------------------------------------------------------*/
--- Type you code below:
+total movie durations*/
 
 select
     director_mapping.name_id as director_id,
@@ -769,16 +586,3 @@ group by
 order by
     number_of_movies desc
 limit 9;
-
-
-
-
-
-
-
-
-
-
-
-
-
