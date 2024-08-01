@@ -1,18 +1,6 @@
 USE imdb;
 
-/* Now that you have imported the data sets, let’s explore some of the tables. 
- To begin with, it is beneficial to know the shape of the tables and whether any column has null values.
- Further in this segment, you will take a look at 'movies' and 'genre' tables.*/
-
-
-
--- Segment 1:
-
-
-
-
--- Q1. Find the total number of rows in each table of the schema?
--- Type your code below:
+-- To begin with, it is beneficial to know the shape of the tables and whether any column has null values.
 
 select count(*) from director_mapping;
 select count(*) from genre;
@@ -21,10 +9,6 @@ select count(*) from names;
 select count(*) from ratings;
 select count(*) from role_mapping;
 
-
-
--- Q2. Which columns in the movie table have null values?
--- Type your code below:
 
 select count(*) as id_nulls from movie where id is null;
 select count(*) as title_nulls from movie where title is null;
@@ -36,30 +20,7 @@ select count(*) as worlwide_gross_income_nulls from movie where worlwide_gross_i
 select count(*) as languages_nulls from movie where languages is null;
 select count(*) as production_company_nulls from movie where production_company is null;
 
-
--- Now as you can see four columns of the movie table has null values. Let's look at the at the movies released each year. 
--- Q3. Find the total number of movies released each year? How does the trend look month wise? (Output expected)
-
-/* Output format for the first part:
-
-+---------------+-------------------+
-| Year			|	number_of_movies|
-+-------------------+----------------
-|	2017		|	2134			|
-|	2018		|		.			|
-|	2019		|		.			|
-+---------------+-------------------+
-
-
-Output format for the second part of the question:
-+---------------+-------------------+
-|	month_num	|	number_of_movies|
-+---------------+----------------
-|	1			|	 134			|
-|	2			|	 231			|
-|	.			|		.			|
-+---------------+-------------------+ */
--- Type your code below:
+-- Four columns of the movie table has null values. 
 
 -- the total number of movies released each year
 select year as Year,     
@@ -75,15 +36,11 @@ from movie
 group by month_num 
 order by month_num;
 
-
-
 /*The highest number of movies is produced in the month of March.
-So, now that you have understood the month-wise trend of movies, let’s take a look at the other details in the movies table. 
+So, now that we have understood the month-wise trend of movies, let’s take a look at the other details in the movies table. 
 We know USA and India produces huge number of movies each year. Lets find the number of movies produced by USA or India for the last year.*/
   
--- Q4. How many movies were produced in the USA or India in the year 2019??
--- Type your code below:
-
+-- How many movies were produced in the USA or India in the year 2019??
 select count(*) as no_of_movies_in_USA_India 
 from movie
 where 
@@ -91,28 +48,13 @@ country = ("USA" or "India")
 and 
 year = 2019;
 
-
-
 /* USA and India produced more than a thousand movies(you know the exact number!) in the year 2019.
-Exploring table Genre would be fun!! 
-Let’s find out the different genres in the dataset.*/
 
--- Q5. Find the unique list of the genres present in the data set?
--- Type your code below:
+Let’s find out the different genres in the dataset.*/
 
 select distinct genre from genre;
 
-
-
-
-
-
-/* So, RSVP Movies plans to make a movie of one of these genres.
-Now, wouldn’t you want to know which genre had the highest number of movies produced in the last year?
-Combining both the movie and genres table can give more interesting insights. */
-
--- Q6.Which genre had the highest number of movies produced overall?
--- Type your code below:
+-- Which genre had the highest number of movies produced overall?
 
 select genre as genre , 
 count(*) as number_of_movies 
@@ -120,14 +62,11 @@ from genre
 group by genre 
 order by number_of_movies desc limit 1;
 
-
-
-/* So, based on the insight that you just drew, RSVP Movies should focus on the ‘Drama’ genre. 
+/* So, based on the insight, RSVP Movies should focus on the ‘Drama’ genre. 
 But wait, it is too early to decide. A movie can belong to two or more genres. 
 So, let’s find out the count of movies that belong to only one genre.*/
 
--- Q7. How many movies belong to only one genre?
--- Type your code below:
+-- How many movies belong to only one genre?
 
 select count(*) as number_of_movies_belonging_to_only_one_genre
 from 
@@ -139,26 +78,11 @@ having count(*)=1
 ) 
 as single_genre_movie;
 
-
-
 /* There are more than three thousand movies which has only one genre associated with them.
 So, this figure appears significant. 
 Now, let's find out the possible duration of RSVP Movies’ next project.*/
 
--- Q8.What is the average duration of movies in each genre? 
--- (Note: The same movie can belong to multiple genres.)
-
-
-/* Output format:
-
-+---------------+-------------------+
-| genre			|	avg_duration	|
-+-------------------+----------------
-|	thriller	|		105			|
-|	.			|		.			|
-|	.			|		.			|
-+---------------+-------------------+ */
--- Type your code below:
+-- What is the average duration of movies in each genre? 
 
 select 
 	genre as genre, 
@@ -168,22 +92,10 @@ inner join
 	movie on genre.movie_id = movie.id 
 group by genre;
 
-
-
-/* Now you know, movies of genre 'Drama' (produced highest in number in 2019) has the average duration of 106.77 mins.
+/* Movies of genre 'Drama' (produced highest in number in 2019) has the average duration of 106.77 mins.
 Lets find where the movies of genre 'thriller' on the basis of number of movies.*/
 
--- Q9.What is the rank of the ‘thriller’ genre of movies among all the genres in terms of number of movies produced? 
--- (Hint: Use the Rank function)
-
-
-/* Output format:
-+---------------+-------------------+---------------------+
-| genre			|		movie_count	|		genre_rank    |	
-+---------------+-------------------+---------------------+
-|drama			|	2312			|			2		  |
-+---------------+-------------------+---------------------+*/
--- Type your code below:
+-- The rank of the ‘thriller’ genre of movies among all the genres in terms of number of movies produced is,
 
 select genre as genre, 
 	count(id) as movie_count, 
@@ -195,29 +107,9 @@ group by genre
 order by movie_count desc;
 
 
+--Thriller movies is in top 3 among all genres in terms of number of movies
 
-
-/*Thriller movies is in top 3 among all genres in terms of number of movies
- In the previous segment, you analysed the movies and genres tables. 
- In this segment, you will analyse the ratings table as well.
-To start with lets get the min and max values of different columns in the table*/
-
-
-
-
--- Segment 2:
-
-
-
-
--- Q10.  Find the minimum and maximum values in  each column of the ratings table except the movie_id column?
-/* Output format:
-+---------------+-------------------+---------------------+----------------------+-----------------+-----------------+
-| min_avg_rating|	max_avg_rating	|	min_total_votes   |	max_total_votes 	 |min_median_rating|min_median_rating|
-+---------------+-------------------+---------------------+----------------------+-----------------+-----------------+
-|		0		|			5		|	       177		  |	   2000	    		 |		0	       |	8			 |
-+---------------+-------------------+---------------------+----------------------+-----------------+-----------------+*/
--- Type your code below:
+-- The minimum and maximum values in  each column of the ratings table except the movie_id column, 
 
 select min(avg_rating) as min_avg_rating , 
 	max(avg_rating) as max_avg_rating,
@@ -226,7 +118,6 @@ select min(avg_rating) as min_avg_rating ,
 	min(median_rating) as min_median_rating , 
 	max(median_rating) as max_median_rating 
 from ratings;
-
 
 
 /* So, the minimum and maximum values in each column of the ratings table are in the expected range. 
