@@ -288,20 +288,7 @@ Since RSVP Movies is based out of Mumbai, India also wants to woo its local audi
 RSVP Movies also wants to hire a few Indian actors for its upcoming project to give a regional feel. 
 Let’s find who these actors could be.*/
 
--- Q22. Rank actors with movies released in India based on their average ratings. Which actor is at the top of the list?
--- Note: The actor should have acted in at least five Indian movies. 
--- (Hint: You should use the weighted average based on votes. If the ratings clash, then the total number of votes should act as the tie breaker.)
-
-/* Output format:
-+---------------+-------------------+---------------------+----------------------+-----------------+
-| actor_name	|	total_votes		|	movie_count		  |	actor_avg_rating 	 |actor_rank	   |
-+---------------+-------------------+---------------------+----------------------+-----------------+
-|	Yogi Babu	|			3455	|	       11		  |	   8.42	    		 |		1	       |
-|		.		|			.		|	       .		  |	   .	    		 |		.	       |
-|		.		|			.		|	       .		  |	   .	    		 |		.	       |
-|		.		|			.		|	       .		  |	   .	    		 |		.	       |
-+---------------+-------------------+---------------------+----------------------+-----------------+*/
--- Type your code below:
+-- Ranking actors with movies released in India based on their average ratings.
 
 select *, 
 	rank() over(order by actor_avg_rating desc, total_votes desc) as actor_rank
@@ -324,26 +311,9 @@ from
 as actor_ratings_based_on_votes
 where movie_count>=5;
 
-
-
-
-
-
 -- Top actor is Vijay Sethupathi
 
--- Q23.Find out the top five actresses in Hindi movies released in India based on their average ratings? 
--- Note: The actresses should have acted in at least three Indian movies. 
--- (Hint: You should use the weighted average based on votes. If the ratings clash, then the total number of votes should act as the tie breaker.)
-/* Output format:
-+---------------+-------------------+---------------------+----------------------+-----------------+
-| actress_name	|	total_votes		|	movie_count		  |	actress_avg_rating 	 |actress_rank	   |
-+---------------+-------------------+---------------------+----------------------+-----------------+
-|	Tabu		|			3455	|	       11		  |	   8.42	    		 |		1	       |
-|		.		|			.		|	       .		  |	   .	    		 |		.	       |
-|		.		|			.		|	       .		  |	   .	    		 |		.	       |
-|		.		|			.		|	       .		  |	   .	    		 |		.	       |
-+---------------+-------------------+---------------------+----------------------+-----------------+*/
--- Type your code below:
+-- The top five actresses in Hindi movies released in India based on their average ratings.
 
 select *, 
 	rank() over(order by actress_avg_rating desc, total_votes desc) as actress_rank
@@ -364,24 +334,7 @@ from
 ) as actress_ratings_based_on_votes
 where movie_count>=3;
 
-
-
-
-
-
-
-/* Taapsee Pannu tops with average rating 7.74. 
-Now let us divide all the thriller movies in the following categories and find out their numbers.*/
-
-
-/* Q24. Select thriller movies as per avg rating and classify them in the following category: 
-
-			Rating > 8: Superhit movies
-			Rating between 7 and 8: Hit movies
-			Rating between 5 and 7: One-time-watch movies
-			Rating < 5: Flop movies
---------------------------------------------------------------------------------------------*/
--- Type your code below:
+-- Taapsee Pannu tops with average rating 7.74. 
 
 select title as name_of_movie,
 case 
@@ -398,25 +351,7 @@ inner join genre on
 where Upper(genre) = 'THRILLER'
 and total_votes > 25000;
 
-
-
-/* Until now, you have analysed various tables of the data set. 
-Now, you will perform some tasks that will give you a broader understanding of the data in this segment.*/
-
--- Segment 4:
-
--- Q25. What is the genre-wise running total and moving average of the average movie duration? 
--- (Note: You need to show the output table in the question.) 
-/* Output format:
-+---------------+-------------------+---------------------+----------------------+
-| genre			|	avg_duration	|running_total_duration|moving_avg_duration  |
-+---------------+-------------------+---------------------+----------------------+
-|	comdy		|			145		|	       106.2	  |	   128.42	    	 |
-|		.		|			.		|	       .		  |	   .	    		 |
-|		.		|			.		|	       .		  |	   .	    		 |
-|		.		|			.		|	       .		  |	   .	    		 |
-+---------------+-------------------+---------------------+----------------------+*/
--- Type your code below:
+-- The genre-wise running total and moving average of the average movie duration? 
 
 select genre, round(avg(duration), 2) as avg_duration,
 round(sum(avg(duration)) over (order by genre), 2) as running_total_duration,
@@ -426,36 +361,10 @@ inner join movie
 on genre.movie_id = movie.id
 group by genre
 order by genre;
-	
-
-
-
-
-
-
--- Round is good to have and not a must have; Same thing applies to sorting
-
 
 -- Let us find top 5 movies of each year with top 3 genres.
 
--- Q26. Which are the five highest-grossing movies of each year that belong to the top three genres? 
--- (Note: The top 3 genres would have the most number of movies.)
-
-/* Output format:
-+---------------+-------------------+---------------------+----------------------+-----------------+
-| genre			|	year			|	movie_name		  |worldwide_gross_income|movie_rank	   |
-+---------------+-------------------+---------------------+----------------------+-----------------+
-|	comedy		|			2017	|	       indian	  |	   $103244842	     |		1	       |
-|		.		|			.		|	       .		  |	   .	    		 |		.	       |
-|		.		|			.		|	       .		  |	   .	    		 |		.	       |
-|		.		|			.		|	       .		  |	   .	    		 |		.	       |
-+---------------+-------------------+---------------------+----------------------+-----------------+*/
--- Type your code below:
-
 -- Top 3 Genres based on most number of movies
-
-
-
 
 select genre, year, movie_name,
 worlwide_gross_income, movie_rank
@@ -483,22 +392,7 @@ inner join
 ) as highest_grossing_movies
 where movie_rank <= 5;
 
-
-
-
-
-
 -- Finally, let’s find out the names of the top two production houses that have produced the highest number of hits among multilingual movies.
--- Q27.  Which are the top two production houses that have produced the highest number of hits (median rating >= 8) among multilingual movies?
-/* Output format:
-+-------------------+-------------------+---------------------+
-|production_company |movie_count		|		prod_comp_rank|
-+-------------------+-------------------+---------------------+
-| The Archers		|		830			|		1	  		  |
-|	.				|		.			|			.		  |
-|	.				|		.			|			.		  |
-+-------------------+-------------------+---------------------+*/
--- Type your code below:
 
 select * from 
 (
